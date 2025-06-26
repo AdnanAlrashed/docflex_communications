@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="view_archive_folder_form" model="ir.ui.view">
+        <field name="name">archive.folder.form</field>
+        <field name="model">archive.folder</field>
+        <field name="arch" type="xml">
+            <form string="مجلد الأرشيف">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="parent_id"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                        <field name="description"/>
+                        <field name="color" widget="color_picker"/>
+                    </group>
+                    <field name="child_ids" mode="list">
+                        <list>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_archive_folder_tree" model="ir.ui.view">
+        <field name="name">archive.folder.tree</field>
+        <field name="model">archive.folder</field>
+        <field name="arch" type="xml">
+            <list string="مجلدات الأرشيف">
+                <field name="name"/>
+                <field name="parent_id"/>
+                <field name="sequence"/>
+                <field name="active"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_archive_folder_search" model="ir.ui.view">
+        <field name="name">archive.folder.search</field>
+        <field name="model">archive.folder</field>
+        <field name="arch" type="xml">
+            <search string="بحث في مجلدات الأرشيف">
+                <field name="name"/>
+                <field name="parent_id"/>
+                <filter name="active" string="نشط" domain="[('active', '=', True)]"/>
+                <field name="color" widget="color_picker"/>
+            </search>
+        </field>
+    </record>
+    <!-- <record id="docflex_archive_folder_menu" model="ir.ui.menu">
+        <field name="name">مجلدات الأرشيف</field>
+        <field name="parent_id" ref="docflex_config_menue"/>
+        <field name="action" ref="action_archive_folder"/>
+        <field name="groups_id" ref="docflex_communications.docflex_super_manager_group"/>
+        <field name="sequence" eval="1"/>
+    </record> -->
+
+
+    <record id="hr_department_hierarchy_view" model="ir.ui.view">
+        <field name="name">archive.folder.view.hierarchy</field>
+        <field name="model">archive.folder</field>
+        <field name="arch" type="xml">
+            <hierarchy child_field="child_ids" draggable="1">
+                <field name="name" />
+                <field name="color" />
+                <!-- <field name="total_employee" /> -->
+                <templates>
+                    <t t-name="hierarchy-box">
+                        <div t-attf-class="o_hierarchy_node_header d-flex justify-content-center align-items-center o_hierarchy_node_color_{{ record.color.raw_value }}">
+                            <field name="name" />
+                        </div>
+                        <div class="o_hierarchy_node_body d-flex flex-column">
+                            <field name="company_id" class="pt-1 ps-1" widget="many2one_avatar" />
+                            <div>
+                                
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </hierarchy>
+        </field>
+    </record>
+
+    <record id="action_archive_folder" model="ir.actions.act_window">
+        <field name="name">مجلدات الأرشيف</field>
+        <field name="res_model">archive.folder</field>
+        <field name="view_mode">list,form,hierarchy</field>
+    </record>
+
+    <menuitem id="menu_archive_folder" name="مجلدات الأرشيف" parent="docflex_config_menue" action="action_archive_folder" groups="docflex_communications.docflex_super_manager_group" sequence="1"/>
+    
+    
+</odoo>
