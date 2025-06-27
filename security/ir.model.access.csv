@@ -67,3 +67,7 @@ access_archive_folder_super_manager_group,docflex.super_manager.group,model_arch
 access_archive_folder_manager_group,docflex.manager.group,model_archive_folder,docflex_communications.docflex_manager_group,1,1,1,1
 access_archive_folder_user_group,docflex.user.group,model_archive_folder,docflex_communications.docflex_user_group,1,0,0,0
 
+access_archive_document_super_manager_group,docflex.super_manager.group,model_archive_document,docflex_communications.docflex_super_manager_group,1,1,1,1
+access_archive_document_manager_group,docflex.manager.group,model_archive_document,docflex_communications.docflex_manager_group,1,1,1,1
+access_archive_document_user_group,docflex.user.group,model_archive_document,docflex_communications.docflex_user_group,1,0,0,0
+

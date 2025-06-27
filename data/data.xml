@@ -4,6 +4,7 @@
     <record id="stage_draft" model="docflex.ticket.stage">
         <field name="name">جديد</field>
         <field name="sequence">1</field>
+        <field name="code">new</field>
         <field name="legend_blocked">معلق</field>
         <field name="legend_done">جاهز</field>
         <field name="legend_normal">قيد المعالجة</field>
@@ -37,6 +38,26 @@
         <field name="name">تم حلها</field>
         <field name="sequence">5</field>
         <field name="fold">True</field>
+        <field name="legend_blocked">معلق</field>
+        <field name="legend_done">جاهز</field>
+        <field name="legend_normal">قيد المعالجة</field>
+    </record>
+
+    <record id="stage_archiving" model="docflex.ticket.stage">
+        <field name="name">معلق في الارشيف</field>
+        <field name="sequence">6</field>
+        <field name="fold">True</field>
+        <field name="code">archiving</field>
+        <field name="legend_blocked">معلق</field>
+        <field name="legend_done">جاهز</field>
+        <field name="legend_normal">قيد المعالجة</field>
+    </record>
+
+    <record id="stage_archived" model="docflex.ticket.stage">
+        <field name="name">مؤرشف</field>
+        <field name="sequence">7</field>
+        <field name="fold">True</field>
+        <field name="code">archived</field>
         <field name="legend_blocked">معلق</field>
         <field name="legend_done">جاهز</field>
         <field name="legend_normal">قيد المعالجة</field>

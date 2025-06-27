@@ -38,6 +38,23 @@ class ArchiveFolder(models.Model):
     color = fields.Integer(string='اللون',default=_get_default_color)
     icon = fields.Binary(string='الأيقونة', attachment=True)
 
+    document_ids = fields.One2many(
+        'archive.document',  # النموذج المرتبط
+        'folder_id',         # الحقل في النموذج المرتبط
+        string='الوثائق الأرشيفية',
+        domain=[('active', '=', True)]  # لعرض الوثائق النشطة فقط
+    )
+    
+    documents_count = fields.Integer(
+        string='عدد الوثائق',
+        compute='_compute_documents_count',
+        store=True
+    )
+    
+    @api.depends('document_ids')
+    def _compute_documents_count(self):
+        for folder in self:
+            folder.documents_count = len(folder.document_ids)
     
     @api.depends('name', 'parent_id.complete_name')
     def _compute_complete_name(self):
