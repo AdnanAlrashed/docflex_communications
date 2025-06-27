@@ -39,7 +39,7 @@ class ArchiveTicketWizard(models.TransientModel):
             'active': False
         })
         
-        # إنشاء وثيقة أرشيفية
+        # إنشاء وثيقة أرشيفية مرتبطة بالمجلد
         archive_doc = self.env['archive.document'].create({
             'name': self.ticket_id.name,
             'reference': self.ticket_id.number,
@@ -47,10 +47,16 @@ class ArchiveTicketWizard(models.TransientModel):
             'date': fields.Date.today(),
             'description': self.notes,
             'document_type': 'incoming' if self.ticket_id.ticket_type_code == 'in' else 'outgoing',
-            'state': 'archived'
+            'state': 'archived',
+            'ticket_id': self.ticket_id.id,
+            'partner_id': self.ticket_id.partner_from_id.id or self.ticket_id.partner_to_id.id,
+            'department_id': self.ticket_id.department_id.id
         })
         
-        # ربط المذكرة بالوثيقة الأرشيفية (اختياري)
+        # ربط المرفقات إذا وجدت
+        if self.ticket_id.attachment_ids:
+            archive_doc.attachment_ids = [(6, 0, self.ticket_id.attachment_ids.ids)]
+        
         self.ticket_id.message_post(
             body=f'تم أرشفة المذكرة في مجلد الأرشيف: {self.folder_id.complete_name}'
         )

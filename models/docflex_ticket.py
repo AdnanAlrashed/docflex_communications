@@ -70,11 +70,15 @@ class DoflexTicket(models.Model):
         string='درجة الاولوية ',
         comodel_name='ticket.priority',
         ondelete='restrict',
+        required=True,
+        default=lambda self: self._get_default_priority_type()
     )
     ticket_security_id = fields.Many2one(
         string='درجة السرية',
         comodel_name='ticket.security',
         ondelete='restrict',
+        required=True,
+        default=lambda self: self._get_default_security_type()
     )
     ticket_type = fields.Many2one('ticket.type', string="Ticket Type", 
                                 default=lambda self: self._get_default_ticket_type())
@@ -93,6 +97,7 @@ class DoflexTicket(models.Model):
         string='تصنيف المذكرة ',
         comodel_name='ticket.classification',
         ondelete='restrict',
+        default=lambda self: self._get_default_classification_type()
     )
     stage_id = fields.Many2one(
         'docflex.ticket.stage', string='المرحلة',
@@ -204,7 +209,7 @@ class DoflexTicket(models.Model):
     related='current_referral_id.state',
     string="حالة الإحالة الحالية",
     store=True
-)
+    )
     referral_count = fields.Integer(
         string='عدد الإحالات',
         compute='_compute_referral_count'
@@ -214,6 +219,24 @@ class DoflexTicket(models.Model):
     lock_reason = fields.Text(string="سبب القفل")
     lock_date = fields.Datetime(string="تاريخ القفل")
     locked_by = fields.Many2one('res.users', string="مقفولة بواسطة")
+
+    # دالة للحصول على درجه السريه  الافتراضي
+    @api.model
+    def _get_default_security_type(self):
+        default_type = self.env['ticket.security'].search([('is_default', '=', True)], limit=1)
+        return default_type.id if default_type else False
+
+    # دالة للحصول على نوع الاولويه الافتراضي
+    @api.model
+    def _get_default_priority_type(self):
+        default_type = self.env['ticket.priority'].search([('is_default', '=', True)], limit=1)
+        return default_type.id if default_type else False
+
+    # دالة للحصول على نوع الاولويه الافتراضي
+    @api.model
+    def _get_default_classification_type(self):
+        default_type = self.env['ticket.classification'].search([('is_default', '=', True)], limit=1)
+        return default_type.id if default_type else False
 
     @api.depends('referral_ids')
     def _compute_current_referral(self):

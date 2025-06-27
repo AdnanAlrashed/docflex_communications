@@ -289,7 +289,7 @@
         </field>
     </record>
 
-  <!-- Search View Enhanced -->
+    <!-- Search View Enhanced -->
     <record id="view_docflex_ticket_search" model="ir.ui.view">
         <field name="name">docflex.ticket.search.advanced</field>
         <field name="model">docflex.ticket</field>

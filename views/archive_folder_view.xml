@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-    <record id="view_archive_folder_form" model="ir.ui.view">
+    <!-- <record id="view_archive_folder_form" model="ir.ui.view">
         <field name="name">archive.folder.form</field>
         <field name="model">archive.folder</field>
         <field name="arch" type="xml">
@@ -14,19 +14,81 @@
                         <field name="description"/>
                         <field name="color" widget="color_picker"/>
                     </group>
-                    <field name="child_ids" mode="list">
+                    <field name="document_ids" mode="list">
                         <list>
                             <field name="name"/>
-                            <field name="sequence"/>
-                            <field name="active"/>
+                            <field name="reference"/>
+                            <field name="document_type"/>
                         </list>
                     </field>
                 </sheet>
             </form>
         </field>
+    </record> -->
+
+    <!-- العرض الأساسي (الأصلي) لمجلدات الأرشيف -->
+    <record id="view_archive_folder_form" model="ir.ui.view">
+        <field name="name">archive.folder.form</field>
+        <field name="model">archive.folder</field>
+        <field name="arch" type="xml">
+            <form string="مجلد الأرشيف">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="parent_id"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                        <field name="description"/>
+                        <field name="color" widget="color_picker"/>
+                        <field name="documents_count" widget="statinfo"/>
+                    </group>
+                    <notebook>
+                        <page string="المجلدات الفرعية">
+                            <field name="child_ids" mode="list,form">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="sequence"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="الوثائق الأرشيفية">
+                            <field name="document_ids" mode="list,form">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="reference"/>
+                                    <field name="date"/>
+                                    <field name="document_type"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
     </record>
 
+    <!-- عرض الشجرة المعدل -->
     <record id="view_archive_folder_tree" model="ir.ui.view">
+        <field name="name">archive.folder.tree</field>
+        <field name="model">archive.folder</field>
+        <field name="arch" type="xml">
+            <list string="مجلدات الأرشيف">
+                <field name="name"/>
+                <field name="parent_id"/>
+                <field name="sequence"/>
+                <field name="active"/>
+                <field name="documents_count" widget="statinfo"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- <record id="view_archive_folder_tree" model="ir.ui.view">
         <field name="name">archive.folder.tree</field>
         <field name="model">archive.folder</field>
         <field name="arch" type="xml">
@@ -38,7 +100,9 @@
                 <field name="color" widget="color_picker"/>
             </list>
         </field>
-    </record>
+    </record> -->
+
+
     <record id="view_archive_folder_search" model="ir.ui.view">
         <field name="name">archive.folder.search</field>
         <field name="model">archive.folder</field>
@@ -91,7 +155,7 @@
         <field name="view_mode">list,form,hierarchy</field>
     </record>
 
-    <menuitem id="menu_archive_folder" name="مجلدات الأرشيف" parent="docflex_config_menue" action="action_archive_folder" groups="docflex_communications.docflex_super_manager_group" sequence="1"/>
+    <menuitem id="menu_archive_folder" name="مجلدات الأرشيف" parent="docflex_main_menue" action="action_archive_folder" groups="docflex_communications.docflex_super_manager_group" sequence="3"/>
     
     
 </odoo>
