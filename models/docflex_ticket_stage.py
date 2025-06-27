@@ -110,7 +110,7 @@ class DocFlexTicketStage(models.Model):
 
     def action_open_docflex_ticket(self):
         self.ensure_one()
-        action = self.env["ir.actions.actions"]._for_xml_id("docflex.docflex_ticket_action_main_tree")
+        action = self.env["ir.actions.actions"]._for_xml_id("docflex_communications.docflex_ticket_action_main_tree")
         action.update({
             'domain': [('stage_id', 'in', self.ids)],
             'context': {
