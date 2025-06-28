@@ -139,9 +139,9 @@
                         </div>
                         <div class="o_hierarchy_node_body d-flex flex-column">
                             <field name="company_id" class="pt-1 ps-1" widget="many2one_avatar" />
-                            <div>
-                                
-                            </div>
+                        </div>
+                        <div class="badge bg-primary text-white my-1 mx-auto w-75 text-center">
+                            <field name="documents_count"/> وثيقة
                         </div>
                     </t>
                 </templates>
