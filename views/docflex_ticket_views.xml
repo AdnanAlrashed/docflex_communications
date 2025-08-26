@@ -357,7 +357,8 @@
                     <group>
                         <field name="folder_id" 
                             domain="[('active', '=', True)]"
-                            context="{'show_path': True}"/>
+                            context="{'show_path': True}"
+                            options="{'no_open': True}"/>
                         <field name="notes" placeholder="أضف ملاحظاتك هنا..."/>
                     </group>
                 </sheet>

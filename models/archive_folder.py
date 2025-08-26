@@ -50,7 +50,32 @@ class ArchiveFolder(models.Model):
         compute='_compute_documents_count',
         store=True
     )
-    
+
+    # مستوى العمق في الهيكل الشجري
+    depth_level = fields.Integer(string='مستوى العمق', compute='_compute_depth_level', store=True)
+
+    # تصنيف المجلدات
+    folder_type = fields.Selection([
+        ('department', 'إدارة'),
+        ('year', 'سنة'),
+        ('subject', 'موضوع'),
+        ('project', 'مشروع')],
+        string='نوع المجلد', required=True, default='subject')
+
+    # تاريخ البدء والانتهاء للمجلدات الزمنية
+    date_start = fields.Date(string='تاريخ البدء')
+    date_end = fields.Date(string='تاريخ الانتهاء')
+
+    @api.depends('parent_id')
+    def _compute_depth_level(self):
+        for folder in self:
+            level = 0
+            parent = folder.parent_id
+            while parent:
+                level += 1
+                parent = parent.parent_id
+            folder.depth_level = level
+        
     @api.depends('document_ids')
     def _compute_documents_count(self):
         for folder in self:
@@ -65,28 +90,23 @@ class ArchiveFolder(models.Model):
                 folder.complete_name = folder.name
 
 
-    def get_department_hierarchy(self):
-        if not self:
-            return {}
-
-        hierarchy = {
-            'parent': {
-                'id': self.parent_id.id,
-                'name': self.parent_id.name,
-                # 'employees': self.parent_id.total_employee,
-            } if self.parent_id else False,
-            'self': {
-                'id': self.id,
-                'name': self.name,
-                # 'employees': self.total_employee,
-            },
-            'children': [
-                {
-                    'id': child.id,
-                    'name': child.name,
-                    # 'employees': child.total_employee
-                } for child in self.child_ids
-            ]
-        }
-
-        return hierarchy
+    @api.model
+    def get_folder_tree(self, parent_id=None):
+        """ استرجاع الهيكل الشجري بكفاءة """
+        domains = []
+        if parent_id:
+            domains.append(('parent_id', '=', parent_id))
+        else:
+            domains.append(('parent_id', '=', False))
+        
+        folders = self.search_read(
+            domain=domains,
+            fields=['id', 'name', 'folder_type', 'color', 'documents_count', 'child_ids'],
+            order='sequence, name'
+        )
+        
+        for folder in folders:
+            folder['children'] = self.get_folder_tree(folder['id'])
+            folder['icon'] = self._get_folder_icon(folder['folder_type'])
+        
+        return folders

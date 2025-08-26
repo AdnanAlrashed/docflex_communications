@@ -27,42 +27,57 @@
     </record> -->
 
     <!-- العرض الأساسي (الأصلي) لمجلدات الأرشيف -->
-    <record id="view_archive_folder_form" model="ir.ui.view">
-        <field name="name">archive.folder.form</field>
+    <record id="view_archive_folder_form_improved" model="ir.ui.view">
+        <field name="name">archive.folder.form.improved</field>
         <field name="model">archive.folder</field>
         <field name="arch" type="xml">
             <form string="مجلد الأرشيف">
                 <sheet>
                     <div class="oe_title">
-                        <h1><field name="name"/></h1>
+                        <h1>
+                            <field name="name"/>
+                            <span class="badge" invisible="folder_type != 'department'">
+                                رئيسي
+                            </span>
+                        </h1>
                     </div>
                     <group>
-                        <field name="name"/>
-                        <field name="parent_id"/>
-                        <field name="sequence"/>
-                        <field name="active"/>
-                        <field name="description"/>
-                        <field name="color" widget="color_picker"/>
-                        <field name="documents_count" widget="statinfo"/>
+                        <group>
+                            <field name="folder_type"/>
+                            <field name="parent_id" context="{'show_path': True}"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="date_start" invisible="folder_type != 'year'"/>
+                            <field name="date_end" invisible="folder_type != 'year'"/>
+                            <field name="color" widget="color_picker"/>
+                            <field name="depth_level" widget="stat_info"/>
+                        </group>
                     </group>
                     <notebook>
-                        <page string="المجلدات الفرعية">
-                            <field name="child_ids" mode="list,form">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="sequence"/>
-                                    <field name="active"/>
-                                </list>
-                            </field>
+                        <page string="الوصف">
+                            <field name="description"/>
                         </page>
-                        <page string="الوثائق الأرشيفية">
-                            <field name="document_ids" mode="list,form">
+                        <page string="المحتويات">
+                            <field name="documents_count" widget="statinfo"/>
+                            <field name="document_ids" mode="kanban,list,form">
                                 <list>
                                     <field name="name"/>
                                     <field name="reference"/>
                                     <field name="date"/>
                                     <field name="document_type"/>
                                     <field name="state"/>
+                                </list>
+                            </field>
+
+                        </page>
+                        <page string="الهيكل التنظيمي" invisible="not child_ids">
+                            <field name="child_ids" mode="list">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="folder_type"/>
+                                    <field name="documents_count"/>
                                 </list>
                             </field>
                         </page>
@@ -73,15 +88,15 @@
     </record>
 
     <!-- عرض الشجرة المعدل -->
-    <record id="view_archive_folder_tree" model="ir.ui.view">
-        <field name="name">archive.folder.tree</field>
+    <record id="view_archive_folder_tree_improved" model="ir.ui.view">
+        <field name="name">archive.folder.list.improved</field>
         <field name="model">archive.folder</field>
         <field name="arch" type="xml">
-            <list string="مجلدات الأرشيف">
+            <list string="مجلدات الأرشيف" decoration-info="depth_level==0" decoration-warning="depth_level>3">
                 <field name="name"/>
-                <field name="parent_id"/>
-                <field name="sequence"/>
-                <field name="active"/>
+                <field name="folder_type" widget="badge"/>
+                <field name="complete_name" invisible="1"/>
+                <field name="depth_level" widget="progressbar" options="{'max_value': 5, 'editable': False}"/>
                 <field name="documents_count" widget="statinfo"/>
                 <field name="color" widget="color_picker"/>
             </list>
@@ -124,6 +139,19 @@
     </record> -->
 
 
+    <record id="view_archive_folder_search" model="ir.ui.view">
+        <field name="name">archive.folder.search</field>
+        <field name="model">archive.folder</field>
+        <field name="arch" type="xml">
+            <search string="بحث في مجلدات الأرشيف">
+                <field name="name"/>
+                <field name="parent_id"/>
+                <filter name="active" string="نشط" domain="[('active', '=', True)]"/>
+                <field name="color" widget="color_picker"/>
+            </search>
+        </field>
+    </record>
+
     <record id="hr_department_hierarchy_view" model="ir.ui.view">
         <field name="name">archive.folder.view.hierarchy</field>
         <field name="model">archive.folder</field>
@@ -139,9 +167,10 @@
                         </div>
                         <div class="o_hierarchy_node_body d-flex flex-column">
                             <field name="company_id" class="pt-1 ps-1" widget="many2one_avatar" />
-                        </div>
-                        <div class="badge bg-primary text-white my-1 mx-auto w-75 text-center">
-                            <field name="documents_count"/> وثيقة
+                            <field name="documents_count"/> وثائق
+                            <div>
+                                
+                            </div>
                         </div>
                     </t>
                 </templates>

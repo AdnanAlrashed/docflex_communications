@@ -1,6 +1,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, AccessError
 from datetime import timedelta
+
 class ArchiveTicketWizard(models.TransientModel):
     _name = 'archive.ticket.wizard'
     _description = 'معالج أرشفة المذكرة'
@@ -14,7 +15,8 @@ class ArchiveTicketWizard(models.TransientModel):
     folder_id = fields.Many2one(
         'archive.folder',
         string='مجلد الأرشيف',
-        required=True
+        required=True,
+        domain="[('active', '=', True)]"
     )
     notes = fields.Text(string='ملاحظات الأرشفة')
     
@@ -23,13 +25,13 @@ class ArchiveTicketWizard(models.TransientModel):
     
     def action_archive_ticket(self):
         self.ensure_one()
-        # البحث عن مرحلة الأرشيف بدلاً من استخدام ref مباشرةً
         archived_stage = self.env['docflex.ticket.stage'].search([
             ('code', '=', 'archived')
         ], limit=1)
         
         if not archived_stage:
             raise UserError("لم يتم العثور على مرحلة الأرشيف في النظام. الرجاء التأكد من إعدادات المراحل.")
+        
         # أرشفة المذكرة
         self.ticket_id.write({
             'archive_folder_id': self.folder_id.id,
@@ -39,7 +41,7 @@ class ArchiveTicketWizard(models.TransientModel):
             'active': False
         })
         
-        # إنشاء وثيقة أرشيفية مرتبطة بالمجلد
+        # إنشاء وثيقة أرشيفية مع ربط المرفقات الأصلية
         archive_doc = self.env['archive.document'].create({
             'name': self.ticket_id.name,
             'reference': self.ticket_id.number,
@@ -53,9 +55,11 @@ class ArchiveTicketWizard(models.TransientModel):
             'department_id': self.ticket_id.department_id.id
         })
         
-        # ربط المرفقات إذا وجدت
+        # ربط المرفقات الأصلية بالوثيقة الأرشيفية
         if self.ticket_id.attachment_ids:
-            archive_doc.attachment_ids = [(6, 0, self.ticket_id.attachment_ids.ids)]
+            archive_doc.write({
+                'attachment_ids': [(4, attachment.id) for attachment in self.ticket_id.attachment_ids]
+            })
         
         self.ticket_id.message_post(
             body=f'تم أرشفة المذكرة في مجلد الأرشيف: {self.folder_id.complete_name}'

@@ -12,7 +12,7 @@
     'module_type':'official',
     'version': '18.0.1.0.0',
     # any module necessary for this one to work correctly
-    'depends': ['base','hr','mail',
+    'depends': ['base','hr','mail', 'docflex_archive',
                 'website',
                 'helpdesk',
                 'documents',
@@ -46,7 +46,7 @@
         'views/docflex_ticket_stage_views.xml',
         'views/res_partner_views.xml',
         'views/referral_views.xml',
-        'views/archive_folder_view.xml',
+        # 'views/archive_folder_view.xml',
         'views/templates.xml',
     ],
     # only loaded in demonstration mode

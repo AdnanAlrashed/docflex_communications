@@ -64,23 +64,20 @@
     </record>
 
     <!-- بيانات تصنيف المذكرات (ticket.classification) -->
-    <record id="classification_complaint" model="ticket.classification">
-        <field name="name">شكوى</field>
+    <record id="classification_general" model="ticket.classification">
+        <field name="name">عام</field>
+        <field name="code">GEN</field>
         <field name="is_default">True</field>
-        <field name="active">True</field>
-        <field name="color">1</field>
     </record>
-
-    <record id="classification_request" model="ticket.classification">
-        <field name="name">طلب</field>
-        <field name="active">True</field>
-        <field name="color">2</field>
+    
+    <record id="classification_technical" model="ticket.classification">
+        <field name="name">فني</field>
+        <field name="code">TEC</field>
     </record>
-
-    <record id="classification_inquiry" model="ticket.classification">
-        <field name="name">استفسار</field>
-        <field name="active">True</field>
-        <field name="color">3</field>
+    
+    <record id="classification_financial" model="ticket.classification">
+        <field name="name">مالي</field>
+        <field name="code">FIN</field>
     </record>
     
 
